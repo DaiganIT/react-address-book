@@ -6,7 +6,6 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { withStyles } from '@material-ui/core/styles';
-import './names.css';
 
 function Names(props) {
   const { classes, book, onItemClick } = props;
@@ -20,11 +19,11 @@ function Names(props) {
             {_.map(book[section], (item) => (
               <ListItem
                 key={`item-${section}-${item.name}`}
-                className="element"
+                className={classes.element}
               >
                 <ListItemText
                   primary={`${item.name} ${item.surname}`}
-                  onClick={() => onItemClick(item.id)}
+                  onClick={() => onItemClick(item.id)} className={classes.element}
                 />
               </ListItem>
             ))}
@@ -44,6 +43,23 @@ Names.propTypes = {
 const styles = (theme) => ({
   list: {
     backgroundColor: theme.palette.background.paper,
+    width: '100%',
+    height: '100%',
+    overflow: 'auto',
+  },
+  listSelection: {
+    backgroundColor: 'inherit',
+  },
+  ul: {
+    backgroundColor: 'inherit',
+    padding: 0,
+  },
+  element: {
+    transition: 'all 400ms ease-in-out',
+    '&:hover': {
+      backgroundColor: theme.palette.primary.light,
+      color: 'white',
+    },
   },
 });
 
