@@ -1,18 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
+import memoize from 'memoize-one';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import List from '@material-ui/core/List';
-import ListSubheader from '@material-ui/core/ListSubheader';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
 import Grid from '@material-ui/core/Grid';
-import { withStyles } from '@material-ui/core/styles';
+import Names from './names';
+import Item from './item';
 
-function getBook(items) {
+const getBook = memoize((items) => {
   const book = {};
   _.forEach(items, (item) => {
     const firstLetter = item.name.substr(0, 1);
@@ -22,10 +20,10 @@ function getBook(items) {
     book[firstLetter].push(item);
   });
   return book;
-}
+});
 
 function Book(props) {
-  const { classes, items } = props;
+  const { items, onItemClick, selectedItem } = props;
   const book = getBook(items);
 
   return (
@@ -40,46 +38,20 @@ function Book(props) {
       </AppBar>
       <Grid container>
         <Grid item xs={3}>
-          <List className={classes.list} subheader={<li />}>
-            {_.map(_.keys(book), (section) => (
-              <li key={`section-${section}`} className={classes.listSection}>
-                <ul className={classes.ul}>
-                  <ListSubheader>{section}</ListSubheader>
-                  {_.map(book[section], (item) => (
-                    <ListItem key={`item-${section}-${item.name}`}>
-                      <ListItemText primary={item.name} />
-                    </ListItem>
-                  ))}
-                </ul>
-              </li>
-            ))}
-          </List>
+          <Names book={book} onItemClick={onItemClick} />
         </Grid>
-        <Grid item xs={9} />
+        <Grid item xs={9}>
+          <Item defaultItem={selectedItem} key={selectedItem.id} />
+        </Grid>
       </Grid>
     </React.Fragment>
   );
 }
 
 Book.propTypes = {
-  classes: PropTypes.object.isRequired,
   items: PropTypes.array.isRequired,
+  selectedItem: PropTypes.object.isRequired,
+  onItemClick: PropTypes.func.isRequired,
 };
 
-const styles = (theme) => ({
-    list: {
-      width: '100%',
-      height: '100%',
-      backgroundColor: theme.palette.background.paper,
-      overflow: 'auto',
-    },
-    listSection: {
-      backgroundColor: 'inherit',
-    },
-    ul: {
-      backgroundColor: 'inherit',
-      padding: 0,
-    },
-  });
-
-export default withStyles(styles)(Book);
+export default Book;
