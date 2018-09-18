@@ -10,11 +10,13 @@ class Item extends React.Component {
     item: this.props.defaultItem,
   };
 
-  handleChange = (event) => {
+  handleChange = name => event => {
+    const value = event.target.value;
+
     this.setState((state) =>
       update(state, {
         item: {
-          [event.target.id]: { $set: event.target.value },
+          [name]: { $set: value },
         },
       }),
     );
@@ -24,10 +26,14 @@ class Item extends React.Component {
     const { classes } = this.props;
     const { item } = this.state;
 
+    const pageTitle = item.id === 0
+      ? 'Create new contact'
+      : `Details of contact ${item.name} ${item.surname}`;
+
     return (
       <div className={classes.root}>
         <Typography variant="display1">
-          Details of contact {item.name} {item.surname}
+          {pageTitle}
         </Typography>
         <form autoComplete="off">
           <TextField
@@ -35,7 +41,7 @@ class Item extends React.Component {
             label="Name"
             className={classes.textField}
             value={item.name}
-            onChange={this.handleChange}
+            onChange={this.handleChange('name')}
             margin="normal"
           />
           <TextField
@@ -43,7 +49,7 @@ class Item extends React.Component {
             label="Surname"
             className={classes.textField}
             value={item.surname}
-            onChange={this.handleChange}
+            onChange={this.handleChange('surname')}
             margin="normal"
           />
         </form>
